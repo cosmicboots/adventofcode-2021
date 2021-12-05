@@ -36,9 +36,19 @@ def ingest(input):
     boards = []
     while input.count("\n") != 1:
         input.remove("\n")
-        boards.append([[int(y) for y in x.rstrip().split()] for x in input[0:input.index("\n")]])
+        boards.append([[int(y) for y in x.rstrip().split()] for x in
+                       input[0:input.index("\n")]])
         input = input[input.index("\n"):len(input)]
     return (input_seq, boards)
+
+
+def check_spaces(boards, checked, num):
+    for board in range(len(boards)):
+        for row in range(len(boards[board])):
+            for cell in range(len(boards[board][row])):
+                if boards[board][row][cell] == num:
+                    checked[board][row][cell] = 1
+    return checked
 
 
 def part1():
@@ -50,11 +60,7 @@ def part1():
     checked = [[[0 for i in row] for row in board] for board in boards]
     score = 0
     for num in input_seq:
-        for board in range(len(boards)):
-            for row in range(len(boards[board])):
-                for cell in range(len(boards[board][row])):
-                    if boards[board][row][cell] == num:
-                        checked[board][row][cell] = 1
+        checked = check_spaces(boards, checked, num)
         win_board = get_win_board(boards, checked)
         if win_board is not None:
             score = calc_score(boards[win_board], checked[win_board], num)
@@ -63,12 +69,27 @@ def part1():
 
 
 def part2():
-    input_seq = []
-    boards = []
     with open("day04.in2", "r") as f:
         input_seq, boards = ingest([line for line in f])
-    print(input_seq)
-    print(boards)
+
+    checked = [[[0 for i in row] for row in board] for board in boards]
+    win_boards = [0 for i in range(len(boards))]
+    loosing_board = -1
+    for num in input_seq:
+        checked = check_spaces(boards, checked, num)
+        if loosing_board != -1:
+            score = calc_score(boards[loosing_board], checked[loosing_board],
+                               num)
+            break
+        for board in range(len(checked)):
+            if check_win(checked[board]):
+                win_boards[board] = 1
+        if win_boards.count(0) == 1:
+            loosing_board = win_boards.index(0)
+            score = calc_score(boards[loosing_board], checked[loosing_board],
+                               num)
+    print("board", loosing_board, "lost")
+    print("Loosing score:", score)
 
 
 def main():
