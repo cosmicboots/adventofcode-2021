@@ -28,6 +28,19 @@ def get_win_board(boards, checked):
     return None
 
 
+def ingest(input):
+    """Ingest the input data"""
+    input_seq = input[0]
+    input.remove(input_seq)
+    input_seq = [int(x) for x in input_seq.rstrip().split(",")]
+    boards = []
+    while input.count("\n") != 1:
+        input.remove("\n")
+        boards.append([[int(y) for y in x.rstrip().split()] for x in input[0:input.index("\n")]])
+        input = input[input.index("\n"):len(input)]
+    return (input_seq, boards)
+
+
 def part1():
     with open("day04.in", "r") as f:
         input_seq = [int(x) for x in f.readline().rstrip().split(",")]
@@ -57,9 +70,20 @@ def part1():
         print("Winning score:", score)
 
 
+def part2():
+    input_seq = None
+    boards = None
+    with open("day04.in2", "r") as f:
+        input_seq, boards = ingest([line for line in f])
+    print(input_seq)
+    print(boards)
+
+
 def main():
     print("=== PART 1 ===")
     part1()
+    print("=== PART 2 ===")
+    part2()
 
 
 if __name__ == "__main__":
