@@ -42,37 +42,29 @@ def ingest(input):
 
 
 def part1():
+    input_seq = []
+    boards = []
     with open("day04.in", "r") as f:
-        input_seq = [int(x) for x in f.readline().rstrip().split(",")]
-        f.readline()
-        boards = []
-        line = f.readline()
-        while line != "EOF\n":
-            board = []
-            while line != "\n":
-                board.append([int(x) for x in line.rstrip().split()])
-                line = f.readline()
-            boards.append(board)
-            line = f.readline()
+        input_seq, boards = ingest([line for line in f])
 
-        checked = [[[0 for i in row] for row in board] for board in boards]
-        score = 0
-        for num in input_seq:
-            for board in range(len(boards)):
-                for row in range(len(boards[board])):
-                    for cell in range(len(boards[board][row])):
-                        if boards[board][row][cell] == num:
-                            checked[board][row][cell] = 1
-            win_board = get_win_board(boards, checked)
-            if win_board is not None:
-                score = calc_score(boards[win_board], checked[win_board], num)
-                break
-        print("Winning score:", score)
+    checked = [[[0 for i in row] for row in board] for board in boards]
+    score = 0
+    for num in input_seq:
+        for board in range(len(boards)):
+            for row in range(len(boards[board])):
+                for cell in range(len(boards[board][row])):
+                    if boards[board][row][cell] == num:
+                        checked[board][row][cell] = 1
+        win_board = get_win_board(boards, checked)
+        if win_board is not None:
+            score = calc_score(boards[win_board], checked[win_board], num)
+            break
+    print("Winning score:", score)
 
 
 def part2():
-    input_seq = None
-    boards = None
+    input_seq = []
+    boards = []
     with open("day04.in2", "r") as f:
         input_seq, boards = ingest([line for line in f])
     print(input_seq)
