@@ -6,6 +6,7 @@ fn main() {
     println!("=== PART 1 ===");
     part1(&data);
     println!("=== PART 2 ===");
+    part2(&data);
 }
 
 fn ingest_data(input: String) -> Vec<String> {
@@ -52,4 +53,25 @@ fn part1(data: &Vec<String>) {
     println!("Gamma: {}", gamma_i);
     println!("Epsilon: {}", epsilon_i);
     println!("Power consumption: {}", gamma_i * epsilon_i);
+}
+
+fn part2(data: &Vec<String>) {
+    let mut data_a = data.clone();
+    let mut data_b = data.clone();
+    for bit in 0..data_a[0].len() {
+        let cb = common_bit(&data_a, bit, false);
+        data_a.retain(|x| x.chars().nth(bit).unwrap() == cb);
+    }
+    for bit in 0..data_b[0].len() {
+        let cb = common_bit(&data_b, bit, true);
+        data_b.retain(|x| x.chars().nth(bit).unwrap() == cb);
+        if data_b.len() == 1 {
+            break;
+        }
+    }
+    let oxygen = usize::from_str_radix(&data_a[0], 2).unwrap();
+    let co2 = usize::from_str_radix(&data_b[0], 2).unwrap();
+    println!("Oxygen: {}", oxygen);
+    println!("CO2: {}", co2);
+    println!("Life support rating: {}", oxygen * co2);
 }
